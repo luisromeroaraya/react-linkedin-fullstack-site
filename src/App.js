@@ -8,12 +8,16 @@ import Article from "./pages/Article";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} exact />
-      <Route path="/about" element={<About />} exact />
-      <Route path="/articles" element={<Articles />} exact />
-      <Route path="/article" element={<Article />} exact />
-    </Routes>
+    <div className="App">
+      <div id="page-body">
+        <Routes>
+          <Route path="/" element={<Home />} exact />
+          <Route path="/about" element={<About />} />
+          <Route path="/articles" element={<Articles />} />
+          <Route path="/article" element={<Article />} />
+        </Routes>
+      </div>
+    </div>
   );
 }
 
