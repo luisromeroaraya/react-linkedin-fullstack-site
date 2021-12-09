@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Articles from "./pages/Articles";
 import Article from "./pages/Article";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -17,6 +18,8 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/articles" element={<Articles />} />
           <Route path="/articles/:name" element={<Article />} />
+          <Route path="*" element={<NotFound />} /> 
+          {/* https://stackoverflow.com/questions/63124161/attempted-import-error-switch-is-not-exported-from-react-router-dom */}
         </Routes>
       </div>
     </div>
