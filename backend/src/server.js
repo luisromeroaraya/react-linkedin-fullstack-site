@@ -24,61 +24,52 @@ app.use(bodyParser.json());
 
 app.get("/api/articles/:name", async (req, res) => {
   try {
-    const articleName = req.params.name;
+    const articleName = req.params.name; // get article name from url
+    const client = await MongoClient.connect("mongodb://localhost:27017", { useNewUrlParser: true, }); // connect to mongoDB
+    const db = client.db("my-blog"); // get database
 
-    const client = await MongoClient.connect("mongodb://localhost:27017", {
-      useNewUrlParser: true,
-    });
-    const db = client.db("my-blog");
+    const articleInfo = await db.collection("articles").findOne({ name: articleName }); // get article info from database
+    res.status(200).json(articleInfo); // send article info to client
 
-    const articleInfo = await db
-      .collection("articles")
-      .findOne({ name: articleName });
-    res.status(200).json(articleInfo);
-
-    client.close();
+    client.close(); // close connection to mongoDB
   } catch (error) {
-    res.status(500).json({ message: "Error connecting to the db", error });
+    res.status(500).json({ message: "Error connecting to the db", error }); // send error to client
   }
 });
 
 app.post("/api/articles/:name/upvote", async (req, res) => {
   try {
-    const articleName = req.params.name;
+    const articleName = req.params.name; // get article name from url
+    const client = await MongoClient.connect("mongodb://localhost:27017", { useNewUrlParser: true, }); // connect to mongoDB
+    const db = client.db("my-blog"); // get database
 
-    const client = await MongoClient.connect("mongodb://localhost:27017", {
-      useNewUrlParser: true,
-    });
-    const db = client.db("my-blog");
+    const articleInfo = await db.collection("articles").findOne({ name: articleName }); // get article info from database
+    await db.collection("articles").updateOne({ name: articleName }, { $set: { upvotes: articleInfo.upvotes + 1 } }); // update upvotes in database
+    const updatedArticleInfo = await db.collection("articles").findOne({ name: articleName }); // get updated article info from database
+    res.status(200).json(updatedArticleInfo); // send updated article info to client
 
-    const articleInfo = await db
-      .collection("articles")
-      .findOne({ name: articleName });
-
-    await db
-      .collection("articles")
-      .updateOne(
-        { name: articleName },
-        { $set: { upvotes: articleInfo.upvotes + 1 } }
-      );
-
-    const updatedArticleInfo = await db
-      .collection("articles")
-      .findOne({ name: articleName });
-
-    res.status(200).json(updatedArticleInfo);
-
-    client.close();
+    client.close(); // close connection to mongoDB
   } catch (error) {
-    res.status(500).json({ message: "Error connecting to the db", error });
+    res.status(500).json({ message: "Error connecting to the db", error }); // send error to client
   }
 });
 
-app.post("/api/articles/:name/add-comment", (req, res) => {
-  const articleName = req.params.name;
-  const comment = { username: req.body.username, text: req.body.text };
-  articlesInfo[articleName].comments.push(comment);
-  res.status(200).send(articlesInfo[articleName]);
+app.post("/api/articles/:name/add-comment", async (req, res) => {
+  try {
+    const articleName = req.params.name; // get article name from url
+    const comment = { username: req.body.username, text: req.body.text }; // get comment from request body
+    const client = await MongoClient.connect("mongodb://localhost:27017", { useNewUrlParser: true, }); // connect to mongoDB
+    const db = client.db("my-blog"); // get database
+
+    const articleInfo = await db.collection("articles").findOne({ name: articleName }); // get article info from database
+    await db.collection("articles").updateOne({ name: articleName }, { $set: { comments: articleInfo.comments.concat(comment) } }); // update comments in database
+    const updatedArticleInfo = await db.collection("articles").findOne({ name: articleName }); // get updated article info from database
+    res.status(200).json(updatedArticleInfo); // send updated article info to client
+
+    client.close(); // close connection to mongoDB
+  } catch (error) {
+    res.status(500).json({ message: "Error connecting to the db", error }); // send error to client
+  }
 });
 
 app.listen(8000, () => {
