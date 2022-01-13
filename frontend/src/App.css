@@ -91,7 +91,7 @@ nav a:hover {
   width: 320px;
 }
 
-#upvotes-section button, p {
+#upvote-section button, p {
   display: inline-block;
   margin-right: 16px;
 }
