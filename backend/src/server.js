@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { MongoClient } from "mongodb";
+import path from "path";
 
 // we installed mongoDB so we dont need this constant anymore
 // const articlesInfo = {
@@ -19,6 +20,8 @@ import { MongoClient } from "mongodb";
 // };
 
 const app = express();
+
+app.use(express.static(path.join(__dirname, "/build"))); // this is the path to the build folder
 
 app.use(bodyParser.json());
 
@@ -70,6 +73,10 @@ app.post("/api/articles/:name/add-comment", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error connecting to the db", error }); // send error to client
   }
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + "/build/index.html")); // send index.html to client
 });
 
 app.listen(8000, () => {
