@@ -4,6 +4,7 @@ import articleContent from "./article-content.js";
 import ArticlesList from "../components/ArticlesList.js";
 import CommentsList from "../components/CommentsList.js";
 import UpvoteSection from "../components/UpvoteSection.js";
+import AddCommentForm from "../components/AddCommentForm.js";
 import NotFound from "../pages/NotFound.js";
 
 function Article() {
@@ -36,6 +37,7 @@ function Article() {
         <p key={key}>{paragraph}</p>
       ))}
       <CommentsList comments={articleInfo.comments} />
+      <AddCommentForm articleName={name} setArticleInfo={setArticleInfo}/>
       <h3>Other Articles:</h3>
       <ArticlesList articles={otherArticles} />
     </div>
